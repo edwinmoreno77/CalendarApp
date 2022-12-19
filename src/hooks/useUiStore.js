@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { onOpenDateModal, onCloseDateModal } from "../store";
+import { onCloseDateModal, onOpenDateModal } from "../store";
 
 
 export const useUiStore = () => {
@@ -27,8 +27,8 @@ export const useUiStore = () => {
         isDateModalOpen,
 
         //methods
-        openDateModal,
         closeDateModal,
+        openDateModal,
         toggleDateModal
     }
 }

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Modal from "react-modal";
 import { addHours } from "date-fns/esm";
 import DatePicker, { registerLocale } from "react-datepicker";
@@ -7,7 +7,7 @@ import es from "date-fns/locale/es";
 import { differenceInSeconds } from "date-fns";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import { useUiStore } from "../../hooks";
+import { useCalendarStore, useUiStore } from "../../hooks";
 
 registerLocale("es", es);
 
@@ -26,13 +26,14 @@ Modal.setAppElement("#root");
 
 export const CalendarModal = () => {
   const { isDateModalOpen, closeDateModal } = useUiStore();
+  const { activeEvent, startSaveEvent } = useCalendarStore();
   const [formSubmitted, setformSubmitted] = useState(false);
 
   const [formValues, setFormValues] = useState({
     title: "",
     notes: "",
-    start: "",
-    end: "",
+    start: new Date(),
+    end: addHours(new Date(), 2),
   });
 
   const titleClass = useMemo(() => {
@@ -40,6 +41,14 @@ export const CalendarModal = () => {
 
     return formValues.title.trim().length < 2 ? "is-invalid" : "";
   }, [formValues.title, formSubmitted]);
+
+  useEffect(() => {
+    if (activeEvent !== null) {
+      setFormValues({ ...activeEvent });
+    }
+
+    return () => {};
+  }, [activeEvent]);
 
   const onInputChange = ({ target }) => {
     setFormValues({
@@ -59,7 +68,7 @@ export const CalendarModal = () => {
     closeDateModal();
   };
 
-  const onSubmit = (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault();
     setformSubmitted(true);
 
@@ -74,22 +83,19 @@ export const CalendarModal = () => {
       return;
     }
 
-    if (formValues.title.trim().length < 2) {
-      // console.log("El título debe ser mayor a 2 letras");
-      return;
-    }
-
     if (formValues.notes.trim().length < 2) {
-      // console.log("La nota debe ser mayor a 2 letras");
+      Swal.fire({
+        title: "Error",
+        text: "La nota debe tener al menos 2 caracteres",
+        icon: "error",
+        confirmButtonText: "Ok",
+      });
       return;
     }
-    // console.log(formValues);
 
-    //TODO:
-    //cerrar modal
-    //guardar en base de datos
-    //actualizar el state de eventos
-    //remover errores en pantalla
+    await startSaveEvent(formValues);
+    closeDateModal();
+    setformSubmitted(false);
   };
 
   return (
