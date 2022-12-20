@@ -11,17 +11,17 @@ export const useCalendarStore = () => {
         dispatch(onSetActiveEvent(calendarEvent));
     }
 
-    const startSaveEvent = (calendarEvent) => {
+    const startSavingEvent = async (calendarEvent) => {
         //TODO: save to db
 
         //all good
 
         if (calendarEvent._id) {
             //update
-            dispatch(onUpdateEvent(calendarEvent));
+            dispatch(onUpdateEvent({ ...calendarEvent }));
         } else {
             //create
-            dispatch(onAddNewEvent({ ...calendarEvent, _id: new Date().getDate() }));
+            dispatch(onAddNewEvent({ _id: new Date().getTime(), ...calendarEvent }));
         }
     }
 
@@ -37,7 +37,7 @@ export const useCalendarStore = () => {
 
         //methods
         setActiveEvent,
-        startSaveEvent,
+        startSavingEvent,
         startDeletingEvent,
     }
 

@@ -26,7 +26,7 @@ Modal.setAppElement("#root");
 
 export const CalendarModal = () => {
   const { isDateModalOpen, closeDateModal } = useUiStore();
-  const { activeEvent, startSaveEvent } = useCalendarStore();
+  const { activeEvent, startSavingEvent } = useCalendarStore();
   const [formSubmitted, setformSubmitted] = useState(false);
 
   const [formValues, setFormValues] = useState({
@@ -46,8 +46,6 @@ export const CalendarModal = () => {
     if (activeEvent !== null) {
       setFormValues({ ...activeEvent });
     }
-
-    return () => {};
   }, [activeEvent]);
 
   const onInputChange = ({ target }) => {
@@ -83,6 +81,8 @@ export const CalendarModal = () => {
       return;
     }
 
+    if (formValues.title.length <= 0) return;
+
     if (formValues.notes.trim().length < 2) {
       Swal.fire({
         title: "Error",
@@ -93,7 +93,7 @@ export const CalendarModal = () => {
       return;
     }
 
-    await startSaveEvent(formValues);
+    await startSavingEvent(formValues);
     closeDateModal();
     setformSubmitted(false);
   };

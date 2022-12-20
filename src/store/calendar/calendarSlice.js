@@ -17,7 +17,9 @@ const tempEvents = {
 export const calendarSlice = createSlice({
     name: 'calendar',
     initialState: {
-        events: [tempEvents],
+        events: [
+            tempEvents
+        ],
         activeEvent: null,
     },
     reducers: {
@@ -33,7 +35,7 @@ export const calendarSlice = createSlice({
         },
         onDeleteEvent: (state) => {
             if (state.activeEvent) {
-                state.events = state.events.filter((event) => (event._id !== state.activeEvent._id));
+                state.events = state.events.filter(event => event._id !== state.activeEvent._id);
                 state.activeEvent = null;
             }
         }

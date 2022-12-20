@@ -42,8 +42,8 @@ export const CalendarPage = () => {
   };
 
   const onViewChange = (e) => {
-    setLastView(e);
     localStorage.setItem("lastView", e);
+    setLastView(e);
   };
 
   return (
